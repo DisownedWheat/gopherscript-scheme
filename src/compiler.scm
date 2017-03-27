@@ -1,6 +1,6 @@
 (import chicken scheme)
 
-(declare (uses lexer))
+(declare (uses lexer parser))
 
 (define test-input "let x = 5
 let y = (z) -> {
@@ -11,6 +11,8 @@ let y = (z) -> {
 (define (main)
   (print test-input)
   (define tokens (tokeniser test-input))
+  (print tokens)
+  (print (parser tokens))
   (map (lambda (x) (print (token-type x) " " (token-value x))) tokens))
 
 (main)
