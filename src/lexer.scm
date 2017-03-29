@@ -35,6 +35,7 @@
                              (set! toks (add-token toks "FUNCDEF" #f))
                              (set! toks (add-token toks "MINUS" "-"))))
         ((char=? char #\+) (set! toks (add-token toks "PLUS" "+")))
+        ((char=? char #\*) (set! toks (add-token toks "MULTI" "*")))
         ((char=? char #\{) (set! toks (add-token toks "LBRACE" "{")))
         ((char=? char #\}) (set! toks (add-token toks "RBRACE" "}")))
         ((char=? char #\=) (if (char=? (list-ref input (+ lexi 1)) #\=)
