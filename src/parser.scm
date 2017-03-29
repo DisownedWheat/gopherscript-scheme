@@ -14,25 +14,30 @@
 
  (define walk
    (lambda ()
+    (print i)
     (define node (list-ref toks i))
-    (print "NODE IS: " (token-value node))
     (define type (token-type node))
-    (set! body
-     (append body
-      `(,(match type
+    (iinc)
+    (match type
           ("NEWLINE" (make-ast-node type: "NEWLINE" body: '() value: "\n"))
           ("LPAREN" (begin
-                     (iinc)
-                     (make-ast-node type: "PARENLIST" value: ""
-                      body: (let ((node (list-ref toks i)))
-                             (do-until (string=? (token-type node) "RPAREN")
-                              (walk))))))
-          (_ (make-ast-node type: "GENERIC" body: '() value: (token-value node)))))))
-    (iinc)))
+                     (let ((body '()))
+                      (do-until (string=? (token-type (list-ref toks i)) "RPAREN")
+                       (set! body (append body `(,(walk))))))
+                     (make-ast-node type: "PARENLIST" value: "" body: body)))
+          ("FUNCDEF" (begin
+                      (let ((body '())
+                            (delim (if (string=? (token-type (peek toks i)) "LBRACE")
+                                    "RBRACE"
+                                    "NEWLINE")))
+                       (do-until (string=? (token-type (list-ref toks i)) delim)
+                        (set! body (append body `(,(walk)))))
+                       (make-ast-node type: "FUNCDEF" value: "func" body: body))))
+          (_ (make-ast-node type: "GENERIC" body: '() value: (token-value node))))))
 
  (define body '())
  (do-until (= i (length toks))
-  (walk))
+  (set! body (append body `(,(walk)))))
  (make-ast-node type: "Program" body: body))
 
 (define (peek toks i) (list-ref toks (+ i 1)))
