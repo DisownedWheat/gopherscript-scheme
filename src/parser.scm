@@ -12,6 +12,7 @@
  (define i 0)
  (define iinc (lambda () (set! i (+ i 1))))
 
+ ; Define the function for inpsecting lexer tokens
  (define walk
    (lambda ()
     (print i)
@@ -42,9 +43,12 @@
                         (make-ast-node type: "REASSIGN" value: (token-value (check toks i))))))
           (_ (make-ast-node type: "GENERIC" value: (token-value node))))))
 
+ ; Create empty body list to contain program
  (define body '())
+ ; Iterate over tokens and add them to the body list
  (do-until (= i (length toks))
   (set! body (append body `(,(walk)))))
+ ; Return the newly create AST!
  (make-ast-node type: "Program" body: body))
 
 ; Peek forward one token

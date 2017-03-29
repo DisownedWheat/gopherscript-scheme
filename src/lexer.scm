@@ -52,6 +52,7 @@
   (set! lexi 0)
   toks)
 
+; Small helper for generating token structs
 (define (add-token lst type val) (append lst `(,(make-token type: type value: val))))
 
 ; Helper for parsing identifiers or keywords
