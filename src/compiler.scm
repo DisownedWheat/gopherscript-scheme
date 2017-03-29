@@ -11,8 +11,13 @@ let y = (z) -> {
 (define (main)
   (print test-input)
   (define tokens (tokeniser test-input))
-  (map (lambda (x) (print (token-type x) " " (token-value x))) tokens)
   (define ast (parser tokens))
-  (print (ast-node-body ast)))
+  (map print-ast-node (ast-node-body ast)))
+
+(define (print-ast-node x)
+  (print (ast-node-type x) " " (ast-node-value x))
+  (if (> (length (ast-node-body x)) 0)
+    (print "GOING INTO BODY"))
+  (map print-ast-node (ast-node-body x)))
 
 (main)
