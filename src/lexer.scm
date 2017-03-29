@@ -19,6 +19,7 @@
 
 ; Global index of input
 (define lexi 0)
+(define (inci) (set! lexi (+ lexi 1)))
 
 ; Main tokeniser function
 (define (tokeniser str)
@@ -46,9 +47,8 @@
        ((char=? char rparen) (set! toks (add-token toks "RPAREN" ")")))
        ((char-alphabetic? char) (set! toks (check-word input toks)))
        ((char-numeric? char) (set! toks (check-number input toks)))))
-   (set! lexi (+ lexi 1)))
+   (inci))
   (set! lexi 0)
-  (print toks)
   toks)
 
 (define (add-token lst type val) (append lst `(,(make-token type: type value: val))))
@@ -68,7 +68,7 @@
              (char=? char #\")
              (char-whitespace? char))
    (set! char-list (append char-list `(,char)))
-   (set! lexi (+ lexi 1))
+   (inci)
    (set! char (list-ref input lexi)))
   (set! lexi (- lexi 1))
   (let ((word (list->string char-list))
@@ -91,7 +91,7 @@
              (char=? char #\")
              (char-whitespace? char))
    (set! char-list (append char-list `(,char)))
-   (set! lexi (+ lexi 1))
+   (inci)
    (set! char (list-ref input lexi)))
  (set! lexi (- lexi 1))
  (let ((num (string->number (list->string char-list))))
@@ -101,11 +101,11 @@
 (define (check-string input lst)
  (define char-list '())
  (define delim (list-ref input lexi))
- (set! lexi (+ lexi 1))
+ (inci)
  (define char (list-ref input lexi))
  (do-until (char=? char delim)
   (set! char-list (append char-list `(,char)))
-  (set! lexi (+ lexi 1))
+  (inci)
   (set! char (list-ref input lexi)))
  (append lst `(,(make-token type: "STRING" value: (list->string char-list)))))
 
