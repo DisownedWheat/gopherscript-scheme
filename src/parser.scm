@@ -47,7 +47,21 @@
   (set! body (append body `(,(walk)))))
  (make-ast-node type: "Program" body: body))
 
+; Peek forward one token
 (define (peek toks i) (list-ref toks (+ i 1)))
+; Peek forward n tokens
 (define (peek-n toks i n) (list-ref toks (+ i n)))
+; Peek forward until a delimiter is hit, then return the prior token
+(define (peek-til toks i delim)
+  (if (string=? (token-type (list-ref toks i)) delim)
+    (list-ref toks (- i 1))
+    (peek-til toks (+ i 1) delim)))
+; Check back one token
 (define (check toks i) (list-ref toks (- i 1)))
+; Check back n tokens
 (define (check-n toks i n) (list-ref toks (- i n)))
+; Check back until a delimiter is hit, then return the next token
+(define (check-til toks i delim)
+  (if (string=? (token-type (list-ref toks i)) delim)
+    (list-ref toks (+ i 1))
+    (check-til toks (- i 1) delim)))
