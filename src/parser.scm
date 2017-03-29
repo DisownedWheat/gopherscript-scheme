@@ -19,7 +19,7 @@
     (define type (token-type node))
     (iinc)
     (match type
-          ("NEWLINE" (make-ast-node type: "NEWLINE" body: '() value: "\n"))
+          ("NEWLINE" (make-ast-node type: "NEWLINE" value: "\n"))
           ("LPAREN" (begin
                      (let ((body '()))
                       (do-until (string=? (token-type (list-ref toks i)) "RPAREN")
@@ -33,7 +33,14 @@
                        (do-until (string=? (token-type (list-ref toks i)) delim)
                         (set! body (append body `(,(walk)))))
                        (make-ast-node type: "FUNCDEF" value: "func" body: body))))
-          (_ (make-ast-node type: "GENERIC" body: '() value: (token-value node))))))
+          ("NUMBER" (make-ast-node type: "NUMBERLITERAL" value: (token-value node)))
+          ("STRING" (make-ast-node type: "STRINGLITERAL" value: (token-value node)))
+          ("IDENT" (make-ast-node type: "IDENT" value: (token-value node)))
+          ("ASSIGN" (begin
+                      (if (string=? (token-type (check-til toks i "NEWLINE")) "LET")
+                        (make-ast-node type: "ASSIGN" value: (token-value (check toks i)))
+                        (make-ast-node type: "REASSIGN" value: (token-value (check toks i))))))
+          (_ (make-ast-node type: "GENERIC" value: (token-value node))))))
 
  (define body '())
  (do-until (= i (length toks))
