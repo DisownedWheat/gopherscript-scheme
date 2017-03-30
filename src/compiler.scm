@@ -1,6 +1,6 @@
 (import chicken scheme)
 
-(declare (uses lexer parser))
+(declare (uses lexer parser transformer))
 
 (define test-input "
 let x = 5
