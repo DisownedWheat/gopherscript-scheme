@@ -9,7 +9,12 @@
   (define (iinc)
     (set! i (+ i 1)))
 
-  (define (walk))
+  (define (traverse ast parent)
+    (map
+      (lambda (node)
+        (match (ast-node-type node)
+          ("ASSIGN" '())))
+      ast))
 
   (define body '())
   (do-until (= i (length (ast-node-body ast)))
