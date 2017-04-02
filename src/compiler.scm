@@ -17,10 +17,9 @@ let y = (z) -> {
 
 (define (print-ast-node x)
   (print (ast-node-type x) " " (ast-node-value x))
-  (if (ast-node-body x)
-     (begin
-       (if (> (length (ast-node-body x)) 0)
-         (print "GOING INTO BODY"))
-       (map print-ast-node (ast-node-body x)))))
+  (if (not (eqv? '() (ast-node-body x)))
+   (if (and (ast-node-body x) (> (length (ast-node-body x)) 0))
+     (print "GOING INTO BODY"))
+   (map print-ast-node (ast-node-body x))))
 
 (main)

@@ -15,7 +15,6 @@
  ; Define the function for inpsecting lexer tokens
  (define walk
    (lambda ()
-    (print i)
     (define node (list-ref toks i))
     (define type (token-type node))
     (iinc)
@@ -38,10 +37,10 @@
           ("STRING" (make-ast-node type: "STRINGLITERAL" value: (token-value node)))
           ("IDENT" (make-ast-node type: "IDENT" value: (token-value node)))
           ("ASSIGN" (begin
-                      (if (string=? (token-type (check-til toks i "NEWLINE")) "LET")
+                      (if (or (string=? (token-type (check-til toks i "NEWLINE")) "LET") (= i 0))
                         (make-ast-node type: "ASSIGN" value: (token-value (check toks i)))
                         (make-ast-node type: "REASSIGN" value: (token-value (check toks i))))))
-          (_ (make-ast-node type: "GENERIC" value: (token-value node))))))
+          (_ #f))))
 
  ; Create empty body list to contain program
  (define body '())
@@ -49,7 +48,7 @@
  (do-until (= i (length toks))
   (set! body (append body `(,(walk)))))
  ; Return the newly create AST!
- (make-ast-node type: "Program" body: body))
+ (make-ast-node type: "Program" body: (filter (lambda (x) x) body)))
 
 ; Peek forward one token
 (define (peek toks i) (list-ref toks (+ i 1)))
